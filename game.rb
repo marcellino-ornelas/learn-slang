@@ -5,6 +5,7 @@ class Game
 
   @answer_abc_placeholder = ["a.)","b.)","c.)","d.)"]
   @current_question_list = []
+  @answer = nil
 
   def initialize(name)
     @player = Player.new(name)
@@ -20,28 +21,24 @@ class Game
     # to prevent duplicate questions
     next_question_number = @queue.pop
 
-    question_data = retrieve_question_data( next_question_number )
+    @answer = retrieve_question_data( next_question_number )
 
-    answer_list = question_data.options.delete("{}").split(',').push( question_data.name ).shuffle!
+    @current_question_list = @answer.options.delete("{}").split(',').push( @answer.name ).shuffle!
 
-    @current_question_list = answer_list.concat
-
-    answer_list = answer_list.map.with_index do |answer,index|
+    answer_list = @current_question_list.map.with_index do |answer,index|
       @answer_abc_placeholder[index] + answer
     end
 
     question_display = <<QUESTION
 ......Question.....
 
-${question.definition}
+${@answer.definition}
 
 ....Answers.....
 
 #{answer_list.join("\n")}
 
 QUESTION
-
-
   end
 
   def answer_question(answer)
@@ -51,17 +48,21 @@ QUESTION
 
     index = answer_index_arr.index(answer)
 
-    return "game over" if index < 0
+    return "invalid" if index < 0
     # save to db self.player.score
-    check_answer(index)
+    points = check_answer?(index) ? 1 : -1
+
+    @player.updateScore(points)
+
+    show_question()
   end
 
 
-  def check_answer(index)
-
+  def check_answer?(index)
+    (@answer.name === @current_question_list[index] ) ? true : false
   end
 
-  private :check_answer
+  private :check_answer, :show_question
 end
 
 

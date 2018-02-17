@@ -1,17 +1,20 @@
 require "./models/player"
+require "./db"
 
 class Game
   attr_accessor :player
 
-  @answer_abc_placeholder = ["a.)","b.)","c.)","d.)"]
-  @current_question_list = []
-  @answer = nil
+  # create_table("words")
 
   def initialize(name)
+    @answer_abc_placeholder = ["a.)","b.)","c.)","d.)"]
+    @current_question_list = []
+    @answer = nil
     @player = Player.new(name)
-    question_length = get_questions_length()
-    @queue = (0...question_length).to_a.shuffle
 
+    question_length = get_questions_length()
+
+    @queue = (0...question_length).to_a.shuffle
 
     show_question()
   end
@@ -23,7 +26,7 @@ class Game
 
     @answer = retrieve_question_data( next_question_number )
 
-    @current_question_list = @answer.options.delete("{}").split(',').push( @answer.name ).shuffle!
+    @current_question_list = @answer["options"].delete("{}").split(',').push( @answer["name"] ).shuffle!
 
     answer_list = @current_question_list.map.with_index do |answer,index|
       @answer_abc_placeholder[index] + answer
@@ -32,13 +35,14 @@ class Game
     question_display = <<QUESTION
 ......Question.....
 
-${@answer.definition}
+#{@answer["definition"]}
 
 ....Answers.....
 
 #{answer_list.join("\n")}
 
 QUESTION
+  print question_display
   end
 
   def answer_question(answer)
@@ -52,6 +56,8 @@ QUESTION
     # save to db self.player.score
     points = check_answer?(index) ? 1 : -1
 
+    print "points: #{points}"
+
     @player.updateScore(points)
 
     show_question()
@@ -59,13 +65,9 @@ QUESTION
 
 
   def check_answer?(index)
-    (@answer.name === @current_question_list[index] ) ? true : false
+    (@answer["name"] === @current_question_list[index] ) ? true : false
   end
 
-  private :check_answer, :show_question
+  # private :check_answer?, :show_question
 end
 
-
-# new_game = Game.new()
-
-# new_game.check_answer

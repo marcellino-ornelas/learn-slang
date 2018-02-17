@@ -80,4 +80,4 @@ a = [
  name: "name of current word"
  definition:"current word def"
  options: ["option1","option2","option3"]
-},
+}]

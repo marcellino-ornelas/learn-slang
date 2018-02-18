@@ -24,6 +24,16 @@ class Game
     # to prevent duplicate questions
     next_question_number = @queue.pop
 
+    if !next_question_number
+      return %Q{
+    .....GAME OVER .....
+
+******************************
+YOUR SCORE: #{@player.score}
+******************************
+}
+    end
+
     @answer = retrieve_question_data( next_question_number )
 
     @current_question_list = @answer["options"].delete("{}").split(',').push( @answer["name"] ).shuffle!
@@ -56,7 +66,7 @@ QUESTION
     # save to db self.player.score
     points = check_answer?(index) ? 1 : -1
 
-    print "points: #{points}"
+    print "points from round: #{points}\n"
 
     @player.updateScore(points)
 
@@ -70,4 +80,5 @@ QUESTION
 
   # private :check_answer?, :show_question
 end
+
 

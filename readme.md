@@ -1,10 +1,10 @@
 #Learn-Slang
 
-#contributes
-erik
-martin
-natalie
-marcellino
+#contributes\n
+erik\n
+martin\n
+natalie\n
+marcellino\n
 
 #Starting Game:
   1) download program from https://github.com/marcellino-ornelas/learn-slang

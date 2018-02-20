@@ -1,6 +1,5 @@
 # Learn-Slang
 
-<<<<<<< HEAD
 ## Starting Game:
 1.  download program from [learn slang](https://github.com/marcellino-ornelas/learn-slang)
 2.  open terminal and cd into learn-slang folder

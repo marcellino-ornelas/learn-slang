@@ -4,10 +4,10 @@ require "./db"
 class Game
   attr_accessor :player
 
-  # create_table("words")
+  create_table("words")
 
   def initialize(name)
-    @answer_abc_placeholder = ["a.)","b.)","c.)","d.)"]
+    @answer_abc_placeholder = ["a","b","c","d"]
     @current_question_list = []
     @answer = nil
     @player = Player.new(name)
@@ -39,7 +39,7 @@ YOUR SCORE: #{@player.score}
     @current_question_list = @answer["options"].delete("{}").split(',').push( @answer["name"] ).shuffle!
 
     answer_list = @current_question_list.map.with_index do |answer,index|
-      @answer_abc_placeholder[index] + answer
+      "#{@answer_abc_placeholder[index]}.) #{answer}"
     end
 
     question_display = <<QUESTION
@@ -55,16 +55,22 @@ QUESTION
   print question_display
   end
 
-  def answer_question(answer)
-    answer_index_arr = @answer_abc_placeholder.map do |x|
-      x.match(/\w+/).to_s
+  def answer_question(answer="")
+    index = @answer_abc_placeholder.index(answer)
+
+    if index < 0
+      p "\ninvalid answer. Please try again\n"
+      return
     end
-
-    index = answer_index_arr.index(answer)
-
-    return "invalid" if index < 0
     # save to db self.player.score
-    points = check_answer?(index) ? 1 : -1
+    is_correct = check_answer?(index)
+    points = is_correct ? 1 : -1
+
+    if is_correct
+      p "\nYou are correct!!!\n"
+    else
+      p "\nWrong answer\n"
+    end
 
     print "points from round: #{points}\n"
 
@@ -80,5 +86,4 @@ QUESTION
 
   # private :check_answer?, :show_question
 end
-
 
